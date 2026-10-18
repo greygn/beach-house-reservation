@@ -31,6 +31,7 @@ return new class extends Migration
             $table->decimal('price_hour', 10, 2);
             $table->decimal('price_day', 10, 2);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('addons', function (Blueprint $table) {
@@ -40,6 +41,7 @@ return new class extends Migration
             $table->unsignedInteger('quantity');
             $table->decimal('price_hour', 10, 2);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('bookings', function (Blueprint $table) {
@@ -49,9 +51,10 @@ return new class extends Migration
             $table->dateTime('time_start');
             $table->dateTime('time_end');
             $table->decimal('total_price', 10, 2);
+            $table->string('status')->default('active');
             $table->timestamps();
 
-            $table->index(['house_id', 'time_start', 'time_end']);
+            $table->index(['house_id', 'status', 'time_start', 'time_end']);
         });
 
         Schema::create('bookings_addons', function (Blueprint $table) {

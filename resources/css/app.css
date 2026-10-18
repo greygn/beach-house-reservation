@@ -4,6 +4,27 @@
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+    --color-sand-50: #faf6ee;
+    --color-sand-100: #f3ead8;
+    --color-sand-200: #e6d6b4;
+    --color-sand-300: #d6bf8c;
+
+    --color-sea-100: #dcebf0;
+    --color-sea-300: #9cc3d1;
+    --color-sea-600: #2f7089;
+    --color-sea-700: #255a70;
+    --color-sea-800: #1e4a5c;
+
+    --color-ink: #23343c;
+}
+
+@layer base {
+    input, select, textarea {
+        @apply border border-gray-300 bg-white px-2 py-1.5 text-sm rounded-sm;
+    }
+    input[type='checkbox'] {
+        @apply p-0;
+    }
 }

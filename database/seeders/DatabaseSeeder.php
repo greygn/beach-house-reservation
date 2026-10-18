@@ -2,24 +2,21 @@
 
 namespace Database\Seeders;
 
+use App\Models\Status;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        foreach (Status::SYSTEM as $name) {
+            Status::firstOrCreate(['name' => $name]);
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $admin = User::firstOrNew(['email' => 'admin@example.com']);
+        $admin->fill(['name' => 'Admin', 'phone' => '+10000000000', 'password' => 'password']);
+        $admin->is_admin = true;
+        $admin->save();
     }
 }

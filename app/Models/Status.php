@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['name', 'description'])]
 class Status extends Model
 {
+    public const PENDING = 'На проверке';
+    public const PUBLISHED = 'Опубликован';
+    public const DELETED = 'Удалён';
+
+    public const SYSTEM = [self::PENDING, self::PUBLISHED, self::DELETED];
+
     public function reviews(): HasMany{
         return $this->hasMany(Review::class);
     }

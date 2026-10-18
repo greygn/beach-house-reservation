@@ -3,12 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['booking_id', 'rating', 'text', 'status_id', 'review_date'])]
 class Review extends Model
 {
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->whereHas('status', fn ($q) => $q->where('name', Status::PUBLISHED));
+    }
+
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
