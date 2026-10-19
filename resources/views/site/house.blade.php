@@ -55,6 +55,9 @@
                                             <span data-free class="block text-xs text-ink/60"></span>
                                         </label>
                                         <input type="number" min="1" value="1" class="w-16">
+                                        @if ($addon->picture_url)
+                                            <img src="{{ $addon->picture_url }}" alt="" class="mb-4 h-56 w-full object-cover">
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>
