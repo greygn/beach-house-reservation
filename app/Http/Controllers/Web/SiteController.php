@@ -11,7 +11,6 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 
-// Read-only pages for visitors and users. All writes go through the JSON API.
 class SiteController extends Controller
 {
     public function houses(Request $request): View

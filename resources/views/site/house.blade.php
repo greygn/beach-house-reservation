@@ -25,8 +25,8 @@
             <h2 class="mb-3 font-semibold">Бронирование</h2>
 
             @guest
-                <p class="text-sm">Чтобы забронировать, <a href="/login" class="text-sea-700 underline">войдите</a>
-                    или <a href="/register" class="text-sea-700 underline">зарегистрируйтесь</a>.</p>
+                <p class="text-sm">Чтобы забронировать, <a href="{{ route('login') }}" class="text-sea-700 underline">войдите</a>
+                    или <a href="{{ route('register') }}" class="text-sea-700 underline">зарегистрируйтесь</a>.</p>
             @else
                 <form data-api="/api/bookings" data-handler="booking" data-redirect="/bookings"
                       data-price-hour="{{ $house->price_hour }}" data-price-day="{{ $house->price_day }}"

@@ -47,9 +47,8 @@ class HouseTypeController extends Controller
     // DELETE /admin/house-types/{house_type}
     public function destroy(HouseType $houseType): JsonResponse
     {
-        // FK is restrictOnDelete, so soft-deleted houses block it too.
         if ($houseType->houses()->withTrashed()->exists()) {
-            return response()->json(['message' => 'Type is used by houses.'], 409);
+            return response()->json(['message' => 'Тип используется домиками.'], 409);
         }
 
         $houseType->delete();

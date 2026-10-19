@@ -75,7 +75,7 @@ class AddonController extends Controller
 
             if ($data['quantity'] < $reserved) {
                 return response()->json([
-                    'message' => "Quantity cannot be below reserved amount ({$reserved}).",
+                    'message' => "Количество не может быть меньше уже забронированного ({$reserved}).",
                 ], 422);
             }
         }
@@ -89,10 +89,9 @@ class AddonController extends Controller
     public function destroy(Addon $addon): JsonResponse
     {
         if ($addon->hasFutureBookings()) {
-            return response()->json(['message' => 'Addon is used in active or future bookings.'], 409);
+            return response()->json(['message' => 'Услуга используется в активных или будущих бронях.'], 409);
         }
 
-        // Soft delete: past bookings keep their addon.
         $addon->delete();
 
         return response()->json(null, 204);

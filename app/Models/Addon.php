@@ -30,10 +30,6 @@ class Addon extends Model
         return $this->belongsToMany(Booking::class, 'bookings_addons')
             ->withPivot('quantity');
     }
-    /**
-     * Max number of units reserved at the same moment inside [$from, $to).
-     * Sweep line over booking intervals clamped to the window.
-     */
     public function peakReserved(Carbon $from, Carbon $to, ?int $exceptBookingId = null): int
     {
         $rows = DB::table('bookings_addons')

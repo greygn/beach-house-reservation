@@ -39,6 +39,8 @@ function errorText(e) {
     if (list.length) return list.join(' ');
     if (e?.status === 403) return 'Недостаточно прав.';
     if (e?.status === 401) return 'Нужно войти.';
+    if (e?.status === 419) return 'Сессия истекла. Обновите страницу.';
+    if (e?.status === 429) return 'Слишком много запросов. Попробуйте позже.';
 
     return d.message || 'Не удалось выполнить запрос.';
 }
@@ -149,7 +151,7 @@ function initBookingForm(form) {
             return;
         }
 
-        let total = Math.floor(hours / 24) * priceDay + Math.min((hours % 24) * priceHour, priceDay);
+        let total = Math.floor(hours / 24) * priceDay + (hours % 24) * priceHour;
 
         rows.forEach((row) => {
             const box = row.querySelector('input[type="checkbox"]');

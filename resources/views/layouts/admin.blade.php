@@ -31,7 +31,8 @@
                     </a>
                 @endforeach
                 <a href="{{ route('houses') }}" class="block text-sm text-gray-600 hover:text-gray-900 md:mt-4 md:px-4 md:py-1.5">На сайт</a>
-                <form data-api="/logout" data-redirect="/" class="md:px-4 md:py-1.5">
+                <form method="POST" action="{{ route('logout') }}" class="md:px-4 md:py-1.5">
+                    @csrf
                     <button class="text-sm text-gray-600 hover:text-gray-900">Выйти</button>
                 </form>
             </nav>

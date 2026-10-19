@@ -15,7 +15,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-// Read-only admin pages. All writes go through the JSON API (/api/admin/*).
 class AdminController extends Controller
 {
     public function bookings(Request $request): View

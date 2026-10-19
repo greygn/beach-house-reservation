@@ -7,12 +7,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [SiteController::class, 'houses'])->name('houses');
 Route::get('/houses/{house}', [SiteController::class, 'house'])->name('houses.show');
 
-Route::middleware('guest')->group(function () {
-    // POST /login and /register live in routes/auth.php (Breeze).
-    Route::view('/login', 'site.login');
-    Route::view('/register', 'site.register');
-});
-
 Route::middleware('auth')->get('/bookings', [SiteController::class, 'bookings'])->name('bookings');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {

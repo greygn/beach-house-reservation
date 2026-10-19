@@ -63,10 +63,9 @@ class HouseController extends Controller
     public function destroy(House $house): JsonResponse
     {
         if ($house->bookings()->active()->where('time_end', '>', now())->exists()) {
-            return response()->json(['message' => 'House has active or future bookings.'], 409);
+            return response()->json(['message' => 'У домика есть активные или будущие брони.'], 409);
         }
 
-        // Soft delete: past bookings and reviews keep their house.
         $house->delete();
 
         return response()->json(null, 204);

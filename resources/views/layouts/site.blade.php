@@ -20,12 +20,13 @@
                     <a href="{{ route('admin.bookings') }}" class="text-sm hover:text-sea-700">Администрирование</a>
                 @endif
                 <span class="text-sm text-ink/60">{{ auth()->user()->name }}</span>
-                <form data-api="/logout" data-redirect="/">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
                     <button class="text-sm text-sea-700 hover:underline">Выйти</button>
                 </form>
             @else
-                <a href="/login" class="text-sm hover:text-sea-700">Войти</a>
-                <a href="/register" class="text-sm hover:text-sea-700">Регистрация</a>
+                <a href="{{ route('login') }}" class="text-sm hover:text-sea-700">Войти</a>
+                <a href="{{ route('register') }}" class="text-sm hover:text-sea-700">Регистрация</a>
             @endauth
         </div>
     </header>

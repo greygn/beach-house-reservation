@@ -81,11 +81,10 @@ class BookingController extends Controller
 
             if ($overlap) {
                 throw ValidationException::withMessages([
-                    'time_start' => 'House is already booked for this period.',
+                    'time_start' => 'Домик уже забронирован на этот период.',
                 ]);
             }
 
-            // Lock addons in id order (no deadlocks), then check stock for the period.
             $addons = Addon::whereIn('id', $requested->keys())->orderBy('id')->lockForUpdate()->get();
             $addonsPrice = 0;
             $hours = (int) ceil($from->diffInMinutes($to, true) / 60);
@@ -96,7 +95,7 @@ class BookingController extends Controller
 
                 if ($qty > $available) {
                     throw ValidationException::withMessages([
-                        'addons' => "Addon \"{$addon->addon_name}\" unavailable for this period (available: {$available}).",
+                        'addons' => "Услуга «{$addon->addon_name}» недоступна на этот период (доступно: {$available}).",
                     ]);
                 }
 
@@ -122,17 +121,16 @@ class BookingController extends Controller
     }
 
     // PATCH /bookings/{booking}/cancel (owner) and /admin/bookings/{booking}/cancel (admin).
-    // Row stays, status changes.
     public function cancel(Request $request, Booking $booking): JsonResponse
     {
         abort_unless($booking->user_id === $request->user()->id || $request->user()->is_admin, 403);
 
         if ($booking->status === BookingStatus::Cancelled) {
-            return response()->json(['message' => 'Booking is already cancelled.'], 409);
+            return response()->json(['message' => 'Бронь уже отменена.'], 409);
         }
 
         if ($booking->time_end->isPast()) {
-            return response()->json(['message' => 'Finished booking cannot be cancelled.'], 409);
+            return response()->json(['message' => 'Завершённую бронь нельзя отменить.'], 409);
         }
 
         $booking->update(['status' => BookingStatus::Cancelled]);
@@ -140,12 +138,11 @@ class BookingController extends Controller
         return response()->json($booking->load(['house', 'addons']));
     }
 
-    // Full days at day price; leftover hours at hour price, capped by day price.
     private function housePrice(House $house, int $hours): float
     {
         $days = intdiv($hours, 24);
         $rest = $hours % 24;
 
-        return $days * $house->price_day + min($rest * $house->price_hour, $house->price_day);
+        return $days * $house->price_day + $rest * $house->price_hour;
     }
 }

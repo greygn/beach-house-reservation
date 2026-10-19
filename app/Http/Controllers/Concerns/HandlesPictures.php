@@ -16,10 +16,7 @@ trait HandlesPictures
         ];
     }
 
-    /**
-     * Turns validated data into model attributes: stores a new file and drops the old one,
-     * or clears the picture when remove_picture is set. Otherwise picture is left untouched.
-     */
+    
     protected function applyPicture(Request $request, string $dir, ?string $current, array $data): array
     {
         unset($data['remove_picture'], $data['picture']);

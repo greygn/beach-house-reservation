@@ -32,9 +32,8 @@ class UserController extends Controller
         ]);
 
         if (array_key_exists('is_admin', $data)) {
-            // Admin must not strip own rights: avoids a system with no admin.
             if ($user->is($request->user()) && ! $data['is_admin']) {
-                return response()->json(['message' => 'Cannot remove own admin rights.'], 422);
+                return response()->json(['message' => 'Нельзя снять права администратора с самого себя.'], 422);
             }
             $user->is_admin = $data['is_admin'];
             unset($data['is_admin']);
@@ -49,11 +48,11 @@ class UserController extends Controller
     public function destroy(Request $request, User $user): JsonResponse
     {
         if ($user->is($request->user())) {
-            return response()->json(['message' => 'Cannot delete yourself.'], 409);
+            return response()->json(['message' => 'Нельзя удалить самого себя.'], 409);
         }
 
         if ($user->bookings()->active()->where('time_end', '>', now())->exists()) {
-            return response()->json(['message' => 'User has active or future bookings.'], 409);
+            return response()->json(['message' => 'У пользователя есть активные или будущие брони.'], 409);
         }
 
         $user->delete();

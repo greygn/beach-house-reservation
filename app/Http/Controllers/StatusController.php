@@ -39,9 +39,8 @@ class StatusController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        // Review flow looks statuses up by name: system names must stay.
         if (isset($data['name']) && in_array($status->name, Status::SYSTEM, true) && $data['name'] !== $status->name) {
-            return response()->json(['message' => 'System status cannot be renamed.'], 409);
+            return response()->json(['message' => 'Системный статус нельзя переименовать.'], 409);
         }
 
         $status->update($data);
@@ -53,11 +52,11 @@ class StatusController extends Controller
     public function destroy(Status $status): JsonResponse
     {
         if (in_array($status->name, Status::SYSTEM, true)) {
-            return response()->json(['message' => 'System status cannot be deleted.'], 409);
+            return response()->json(['message' => 'Системный статус нельзя удалить.'], 409);
         }
 
         if ($status->reviews()->exists()) {
-            return response()->json(['message' => 'Status is used by reviews.'], 409);
+            return response()->json(['message' => 'Статус используется в отзывах.'], 409);
         }
 
         $status->delete();

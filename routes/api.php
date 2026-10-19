@@ -10,8 +10,6 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Login, registration, logout, password reset: Breeze, see routes/auth.php (web routes, session cookie).
-
 Route::get('/houses', [HouseController::class, 'index']);
 Route::get('/houses/{house}', [HouseController::class, 'show']);
 Route::get('/houses/{house}/reviews', [ReviewController::class, 'indexByHouse']); // only published
