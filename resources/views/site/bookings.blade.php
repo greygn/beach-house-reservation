@@ -8,7 +8,7 @@
     @forelse ($bookings as $booking)
         @php
             $isCancelled = $booking->status === $cancelled;
-            $canReview = ! $isCancelled && $booking->time_end->isPast() && ! $booking->review;
+            $canReview = $booking->status === $active && $booking->time_end->isPast() && ! $booking->review;
         @endphp
 
         <article class="mb-4 border border-sand-300 bg-sand-50 p-4 text-sm">
@@ -27,7 +27,25 @@
                 </div>
             @endif
 
+            <div class="mt-1">Гостей: {{ $booking->guests }}</div>
+
+            @if ($booking->services->isNotEmpty())
+                <div class="mt-1 text-ink/70">
+                    Услуги: {{ $booking->services->map(fn ($s) => $s->service->name.' ('.$s->time_start->format('d.m H:i').')')->join(', ') }}
+                </div>
+            @endif
+
             <div class="mt-1">Стоимость: {{ $booking->total_price }}</div>
+
+            @if ($booking->status === $active)
+                @if ($booking->paid_at)
+                    <div class="mt-1 text-sea-700">Оплачено</div>
+                @elseif ($booking->time_end->isFuture())
+                    <a href="{{ route('bookings.pay', $booking) }}" class="mt-1 inline-block text-sea-700 underline">Оплатить</a>
+                @endif
+            @elseif (! $isCancelled)
+                <div class="mt-1 text-ink/70">Бронь станет действительной после подтверждения администратором.</div>
+            @endif
 
             @if (! $isCancelled && $booking->time_end->isFuture())
                 <form data-api="/api/bookings/{{ $booking->id }}/cancel" data-method="PATCH"
@@ -55,7 +73,6 @@
                     </label>
                     <textarea name="text" rows="3" maxlength="5000" placeholder="Отзыв" class="block w-full"></textarea>
                     <button class="bg-sea-700 px-3 py-1.5 text-white hover:bg-sea-800">Отправить отзыв</button>
-                    <span class="text-xs text-ink/60">Отзыв появится после проверки.</span>
                 </form>
             @endif
         </article>

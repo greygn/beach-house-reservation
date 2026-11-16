@@ -8,6 +8,8 @@ Route::get('/', [SiteController::class, 'houses'])->name('houses');
 Route::get('/houses/{house}', [SiteController::class, 'house'])->name('houses.show');
 
 Route::middleware('auth')->get('/bookings', [SiteController::class, 'bookings'])->name('bookings');
+Route::middleware('auth')->get('/bookings/{booking}/pay', [SiteController::class, 'pay'])->name('bookings.pay');
+Route::middleware(['auth', 'staff'])->get('/staff', [SiteController::class, 'staff'])->name('staff');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'bookings'])->name('admin.bookings');
@@ -16,6 +18,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/house-types', [AdminController::class, 'houseTypes'])->name('admin.house-types');
     Route::get('/addons', [AdminController::class, 'addons'])->name('admin.addons');
     Route::get('/statuses', [AdminController::class, 'statuses'])->name('admin.statuses');
+    Route::get('/services', [AdminController::class, 'services'])->name('admin.services');
+    Route::get('/staff', [AdminController::class, 'staff'])->name('admin.staff');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
 });
 

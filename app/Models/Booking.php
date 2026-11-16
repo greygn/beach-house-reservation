@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
-#[Fillable(['user_id', 'house_id', 'time_start', 'time_end', 'total_price', 'status'])]
+#[Fillable(['user_id', 'house_id', 'time_start', 'time_end', 'guests', 'total_price', 'status', 'paid_at'])]
 class Booking extends Model
 {
 
@@ -21,6 +22,11 @@ class Booking extends Model
             ->withTrashed()
             ->withPivot('quantity');
     }
+    public function services(): HasMany
+    {
+        return $this->hasMany(BookingService::class);
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -58,6 +64,7 @@ class Booking extends Model
             'status' => BookingStatus::class,
             'time_start' => 'datetime',
             'time_end'   => 'datetime',
+            'paid_at' => 'datetime',
         ];
     }
 }

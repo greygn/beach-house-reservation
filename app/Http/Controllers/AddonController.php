@@ -89,7 +89,7 @@ class AddonController extends Controller
     public function destroy(Addon $addon): JsonResponse
     {
         if ($addon->hasFutureBookings()) {
-            return response()->json(['message' => 'Услуга используется в активных или будущих бронях.'], 409);
+            return response()->json(['message' => 'Аддон используется в подтверждённых или будущих бронях.'], 409);
         }
 
         $addon->delete();

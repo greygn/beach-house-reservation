@@ -34,7 +34,9 @@
                     <th class="py-2 pr-4 font-medium">Домик</th>
                     <th class="py-2 pr-4 font-medium">Гость</th>
                     <th class="py-2 pr-4 font-medium">Период</th>
+                    <th class="py-2 pr-4 font-medium">Гостей</th>
                     <th class="py-2 pr-4 font-medium">Аддоны</th>
+                    <th class="py-2 pr-4 font-medium">Услуги</th>
                     <th class="py-2 pr-4 font-medium">Сумма</th>
                     <th class="py-2 pr-4 font-medium">Статус</th>
                     <th class="py-2 font-medium"></th>
@@ -47,20 +49,45 @@
                         <td class="py-2 pr-4">{{ $booking->house->name }}</td>
                         <td class="py-2 pr-4">{{ $booking->user->name }}<br><span class="text-gray-500">{{ $booking->user->phone }}</span></td>
                         <td class="py-2 pr-4 whitespace-nowrap">{{ $booking->time_start->format('d.m.Y H:i') }}<br>{{ $booking->time_end->format('d.m.Y H:i') }}</td>
+                        <td class="py-2 pr-4">{{ $booking->guests }}</td>
                         <td class="py-2 pr-4">{{ $booking->addons->map(fn ($a) => $a->addon_name.' × '.$a->pivot->quantity)->join(', ') ?: '—' }}</td>
-                        <td class="py-2 pr-4">{{ $booking->total_price }}</td>
+                        <td class="py-2 pr-4">
+                            @forelse ($booking->services as $slot)
+                                <div class="whitespace-nowrap">
+                                    {{ $slot->service->name }}, {{ $slot->time_start->format('d.m H:i') }}—{{ $slot->time_end->format('H:i') }}
+                                    @if ($booking->status === \App\Enums\BookingStatus::Pending)
+                                        <select form="approve-{{ $booking->id }}" name="assignments[{{ $slot->id }}]" required>
+                                            <option value="">Сотрудник…</option>
+                                            @foreach ($staff as $member)
+                                                <option value="{{ $member->id }}">{{ $member->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <span class="text-gray-500">· {{ $slot->staff?->name ?? '—' }}</span>
+                                    @endif
+                                </div>
+                            @empty
+                                —
+                            @endforelse
+                        </td>
+                        <td class="py-2 pr-4">{{ $booking->total_price }}@if ($booking->paid_at)<br><span class="text-gray-500">оплачено</span>@endif</td>
                         <td class="py-2 pr-4">{{ $booking->status->label() }}</td>
-                        <td class="py-2">
-                            @if ($booking->status === \App\Enums\BookingStatus::Active && $booking->time_end->isFuture())
+                        <td class="py-2 whitespace-nowrap">
+                            @if ($booking->status === \App\Enums\BookingStatus::Pending && $booking->time_end->isFuture())
+                                <form id="approve-{{ $booking->id }}" data-api="/api/admin/bookings/{{ $booking->id }}/approve" data-method="PATCH" class="inline">
+                                    <button class="hover:underline">Подтвердить</button>
+                                </form>
+                            @endif
+                            @if ($booking->status !== \App\Enums\BookingStatus::Cancelled && $booking->time_end->isFuture())
                                 <form data-api="/api/admin/bookings/{{ $booking->id }}/cancel" data-method="PATCH"
-                                      data-confirm="Отменить бронь №{{ $booking->id }}?">
+                                      data-confirm="Отменить бронь №{{ $booking->id }}?" class="ml-3 inline">
                                     <button class="text-red-700 hover:underline">Отменить</button>
                                 </form>
                             @endif
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="8" class="py-4 text-gray-500">Броней не найдено.</td></tr>
+                    <tr><td colspan="10" class="py-4 text-gray-500">Броней не найдено.</td></tr>
                 @endforelse
             </tbody>
         </table>

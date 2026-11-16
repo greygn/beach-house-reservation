@@ -21,11 +21,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(Booking::class);
     }
+    public function shifts(): HasMany
+    {
+        return $this->hasMany(Shift::class);
+    }
+
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(BookingService::class);
+    }
+
     protected function casts(): array
     {
         return [
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'is_staff' => 'boolean',
         ];
     }
 }

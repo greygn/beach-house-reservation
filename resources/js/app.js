@@ -61,6 +61,11 @@ function formPayload(form) {
     const body = {};
     for (const el of form.elements) {
         if (!el.name || el.disabled) continue;
+        const nested = el.name.match(/^(\w+)\[(\d+)\]$/); // assignments[12] -> {assignments: {12: value}}
+        if (nested) {
+            (body[nested[1]] ??= {})[nested[2]] = el.value;
+            continue;
+        }
         body[el.name] = el.type === 'checkbox' ? el.checked : el.value;
     }
     return body;
@@ -78,10 +83,20 @@ function bookingPayload(form) {
         }
     });
 
+    const services = [];
+    form.querySelectorAll('[data-service]').forEach((row) => {
+        const box = row.querySelector('input[type="checkbox"]');
+        if (box.checked) {
+            services.push({ service_id: Number(box.value) });
+        }
+    });
+
     return {
         house_id: Number(form.elements.house_id.value),
         time_start: form.elements.time_start.value,
         time_end: form.elements.time_end.value,
+        guests: Number(form.elements.guests.value),
+        services,
         addons,
     };
 }
@@ -159,6 +174,10 @@ function initBookingForm(form) {
             if (box.checked) total += Number(row.dataset.price) * hours * qty;
         });
 
+        form.querySelectorAll('[data-service]').forEach((row) => {
+            if (row.querySelector('input[type="checkbox"]').checked) total += Number(row.dataset.price) * hours;
+        });
+
         estimate.textContent = `Ориентировочно: ${total.toFixed(2)}`;
     }
 
@@ -194,3 +213,26 @@ function initBookingForm(form) {
 }
 
 document.querySelectorAll('form[data-handler="booking"]').forEach(initBookingForm);
+
+// Card form input masks.
+const masks = {
+    card: (v) => v.replace(/\D/g, '').slice(0, 16).replace(/(\d{4})(?=\d)/g, '$1 '),
+    expiry: (v) => {
+        const d = v.replace(/\D/g, '').slice(0, 4);
+        return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
+    },
+    cvc: (v) => v.replace(/\D/g, '').slice(0, 3),
+    holder: (v) => v.replace(/[^A-Za-zА-Яа-яЁё\s.'-]/g, '').toUpperCase(),
+};
+
+document.addEventListener('input', (e) => {
+    const mask = masks[e.target.dataset?.mask];
+    if (!mask) return;
+
+    // Skip reformatting on delete so the caret does not jump past an auto-inserted separator.
+    if (e.inputType?.startsWith('delete')) {
+        e.target.value = mask(e.target.value).replace(/[ /]$/, '');
+        return;
+    }
+    e.target.value = mask(e.target.value);
+});

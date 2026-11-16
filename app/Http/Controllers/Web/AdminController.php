@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\House;
 use App\Models\HouseType;
 use App\Models\Review;
+use App\Models\Service;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
@@ -27,12 +28,13 @@ class AdminController extends Controller
         ]);
 
         return view('admin.bookings', [
-            'bookings' => Booking::with(['user', 'house', 'addons', 'review'])
+            'bookings' => Booking::with(['user', 'house', 'addons', 'services.service', 'review'])
                 ->filter($filters)
                 ->orderByDesc('time_start')
                 ->paginate(30)
                 ->withQueryString(),
             'houses' => House::orderBy('name')->get(),
+            'staff' => User::where('is_staff', true)->orderBy('name')->get(),
             'filters' => $filters,
             'statuses' => BookingStatus::cases(),
         ]);
@@ -67,6 +69,18 @@ class AdminController extends Controller
     public function addons(): View
     {
         return view('admin.addons', ['addons' => Addon::orderBy('addon_name')->get()]);
+    }
+
+    public function services(): View
+    {
+        return view('admin.services', ['services' => Service::orderBy('name')->get()]);
+    }
+
+    public function staff(): View
+    {
+        return view('admin.staff', [
+            'staff' => User::where('is_staff', true)->with(['shifts' => fn ($q) => $q->where('time_end', '>', now())->orderBy('time_start')])->orderBy('name')->get(),
+        ]);
     }
 
     public function statuses(): View

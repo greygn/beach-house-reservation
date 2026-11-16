@@ -6,7 +6,6 @@
     <form method="POST" action="{{ route('password.email') }}" class="mx-auto max-w-sm space-y-4">
         @csrf
         <h1 class="text-xl font-semibold">Восстановление пароля</h1>
-        <p class="text-sm">Укажите email, и мы отправим ссылку для сброса пароля.</p>
 
         @if (session('status'))
             <p class="text-sm text-green-700">{{ session('status') }}</p>

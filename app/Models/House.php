@@ -16,8 +16,6 @@ class House extends Model
     use SoftDeletes;
 
     protected $appends = ['picture_url'];
-
-    // Public URL of the uploaded file (php artisan storage:link).
     protected function pictureUrl(): Attribute
     {
         return Attribute::get(fn () => $this->picture ? Storage::disk('public')->url($this->picture) : null);

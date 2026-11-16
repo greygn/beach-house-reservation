@@ -16,6 +16,9 @@
 
             @auth
                 <a href="{{ route('bookings') }}" class="text-sm hover:text-sea-700">Мои брони</a>
+                @if (auth()->user()->is_staff)
+                    <a href="{{ route('staff') }}" class="text-sm hover:text-sea-700">Мои смены</a>
+                @endif
                 @if (auth()->user()->is_admin)
                     <a href="{{ route('admin.bookings') }}" class="text-sm hover:text-sea-700">Администрирование</a>
                 @endif

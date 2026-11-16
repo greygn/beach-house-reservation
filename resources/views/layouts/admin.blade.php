@@ -15,6 +15,8 @@
             'admin.houses' => 'Домики',
             'admin.house-types' => 'Типы домиков',
             'admin.addons' => 'Аддоны',
+            'admin.services' => 'Услуги',
+            'admin.staff' => 'Сотрудники',
             'admin.statuses' => 'Статусы отзывов',
             'admin.users' => 'Пользователи',
         ];

@@ -45,5 +45,4 @@
             @endforeach
         </tbody>
     </table>
-    <p class="mt-3 text-xs text-gray-500">Системные статусы нельзя переименовать или удалить.</p>
 @endsection

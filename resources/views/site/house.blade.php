@@ -41,6 +41,26 @@
                         <input type="datetime-local" name="time_end" required class="mt-1 block w-full">
                     </label>
 
+                    <label class="block text-sm">Гостей
+                        <input type="number" name="guests" min="1" max="{{ $house->capacity }}" value="1" required class="mt-1 block w-full">
+                    </label>
+
+                    @if ($services->isNotEmpty())
+                        <fieldset>
+                            <legend class="text-sm">Услуги специалистов</legend>
+                            <div class="mt-1 divide-y divide-sand-300 border border-sand-300 bg-sand-50">
+                                @foreach ($services as $service)
+                                    <div data-service="{{ $service->id }}" data-price="{{ $service->price_hour }}" class="px-3 py-2 text-sm">
+                                        <label>
+                                            <input type="checkbox" value="{{ $service->id }}">
+                                            {{ $service->name }} <span class="text-ink/60">· {{ $service->price_hour }} за час</span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </fieldset>
+                    @endif
+
                     @if ($addons->isNotEmpty())
                         <fieldset>
                             <legend class="text-sm">Дополнительно</legend>
@@ -61,7 +81,6 @@
                                     </div>
                                 @endforeach
                             </div>
-                            <p class="mt-1 text-xs text-ink/60">Наличие появится после выбора дат.</p>
                         </fieldset>
                     @endif
 

@@ -19,7 +19,6 @@ class Addon extends Model
 
     protected $appends = ['picture_url'];
 
-    // Public URL of the uploaded file (php artisan storage:link).
     protected function pictureUrl(): Attribute
     {
         return Attribute::get(fn () => $this->picture ? Storage::disk('public')->url($this->picture) : null);
@@ -61,7 +60,6 @@ class Addon extends Model
         return $peak;
     }
 
-    /** Units free for the whole of [$from, $to). */
     public function availableBetween(Carbon $from, Carbon $to): int
     {
         return max(0, $this->quantity - $this->peakReserved($from, $to));

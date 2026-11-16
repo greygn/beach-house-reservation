@@ -40,8 +40,8 @@ class ReviewController extends Controller
     {
         abort_unless($booking->user_id === $request->user()->id, 403);
 
-        if ($booking->status === BookingStatus::Cancelled) {
-            return response()->json(['message' => 'На отменённую бронь нельзя оставить отзыв.'], 422);
+        if ($booking->status !== BookingStatus::Active) {
+            return response()->json(['message' => 'Отзыв можно оставить только на подтверждённую бронь.'], 422);
         }
 
         if ($booking->time_end->isFuture()) {

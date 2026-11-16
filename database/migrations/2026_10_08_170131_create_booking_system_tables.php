@@ -34,6 +34,24 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        Schema::create('services', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->decimal('price_hour', 10, 2);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('shifts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->dateTime('time_start');
+            $table->dateTime('time_end');
+            $table->timestamps();
+
+            $table->index(['user_id', 'time_start', 'time_end']);
+        });
+
         Schema::create('addons', function (Blueprint $table) {
             $table->id();
             $table->string('addon_name');
@@ -50,8 +68,10 @@ return new class extends Migration
             $table->foreignId('house_id')->constrained()->restrictOnDelete();
             $table->dateTime('time_start');
             $table->dateTime('time_end');
+            $table->unsignedSmallInteger('guests');
             $table->decimal('total_price', 10, 2);
-            $table->string('status')->default('active');
+            $table->string('status')->default('pending');
+            $table->dateTime('paid_at')->nullable();
             $table->timestamps();
 
             $table->index(['house_id', 'status', 'time_start', 'time_end']);
@@ -63,6 +83,19 @@ return new class extends Migration
             $table->unsignedInteger('quantity')->default(1);
 
             $table->primary(['booking_id', 'addon_id']);
+        });
+
+        Schema::create('bookings_services', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('booking_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('service_id')->constrained()->restrictOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->dateTime('time_start');
+            $table->dateTime('time_end');
+            $table->decimal('price', 10, 2);
+            $table->timestamps();
+
+            $table->index(['user_id', 'time_start', 'time_end']);
         });
 
         Schema::create('reviews', function (Blueprint $table) {
@@ -79,9 +112,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('reviews');
+        Schema::dropIfExists('bookings_services');
         Schema::dropIfExists('bookings_addons');
         Schema::dropIfExists('bookings');
         Schema::dropIfExists('addons');
+        Schema::dropIfExists('shifts');
+        Schema::dropIfExists('services');
         Schema::dropIfExists('houses');
         Schema::dropIfExists('statuses');
         Schema::dropIfExists('house_types');
